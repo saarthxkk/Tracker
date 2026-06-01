@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Co-Star DSA — Cosmic Algorithm Tracker</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A stunning, celestial DSA course tracker inspired by Co-Star Astrology. Track your progress across 19 theory topics and 263 practice problems from Striver A2Z.">
+  <meta name="keywords" content="DSA, Data Structures, Algorithms, Striver, LeetCode, Codeforces, Co-Star, Astrology, Study Tracker">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+
+    <!-- Top Bar -->
+    <header id="top-bar" class="top-bar">
+      <button class="menu-btn" onclick="openSidebar()" aria-label="Open navigation menu">☰</button>
+      <div class="top-bar-title">Cosmic DSA Tracker</div>
+      <div class="top-bar-progress">
+        <div class="top-bar-progress-bar">
+          <div id="top-bar-progress-fill" class="top-bar-progress-fill" style="width: 0%;"></div>
+        </div>
+        <span id="top-bar-progress-text">0%</span>
+      </div>
+    </header>
+
+    <!-- Sidebar Overlay & Aside -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Navigation</div>
+        <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close navigation menu">×</button>
+      </div>
+      <nav id="sidebar-nav">
+        <!-- Dynamically rendered links in app.js -->
+      </nav>
+    </aside>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-eyebrow">A Cosmic Journey Through Algorithms</div>
+      <h1 class="hero-title">Master <em>DSA</em> in 30 Days</h1>
+      <p class="hero-subtitle">Align your mind with the logical structure of computer science. A curated roadmap and practice list to prepare you for technical challenges.</p>
+      
+      <!-- Progress Ring (SVG) -->
+      <div class="progress-ring-container">
+        <svg class="progress-ring" width="180" height="180">
+          <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#c9a84c" />
+              <stop offset="100%" stop-color="#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <circle class="progress-ring-bg" cx="90" cy="90" r="76" />
+          <circle id="progress-ring-circle" class="progress-ring-fill" cx="90" cy="90" r="76" />
+        </svg>
+        <div id="hero-percentage" class="progress-ring-text">0%</div>
+        <div class="progress-ring-label">Progress</div>
+      </div>
+      
+      <!-- Quick Stats -->
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div id="hero-total-topics" class="hero-stat-value">19</div>
+          <div class="hero-stat-label">Theory Topics</div>
+        </div>
+        <div class="hero-stat">
+          <div id="hero-solved" class="hero-stat-value">0</div>
+          <div class="hero-stat-label">Solved Items</div>
+        </div>
+        <div class="hero-stat">
+          <div id="hero-total-problems" class="hero-stat-value">263</div>
+          <div class="hero-stat-label">Practice Problems</div>
+        </div>
+      </div>
+      
+      <div class="hero-scroll-indicator">
+        <span>Scroll to explore</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- Dashboard Stats Grid -->
+    <section id="dashboard" class="container reveal" style="padding-top: 40px; padding-bottom: 20px;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div id="stat-topics-done" class="stat-card-value">0/19</div>
+          <div class="stat-card-label">Roadmap Progress</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-problems-done" class="stat-card-value">0/263</div>
+          <div class="stat-card-label">Problems Solved</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-easy" class="stat-card-value">0</div>
+          <div class="stat-card-label">Easy Problems</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-hard" class="stat-card-value">0M / 0H</div>
+          <div class="stat-card-label">Medium & Hard</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Workspace -->
+    <main class="container reveal">
+      
+      <!-- Tab Control buttons -->
+      <div class="main-tabs">
+        <button class="main-tab active" data-tab="roadmap" onclick="switchMainTab(this)">Theory Roadmap</button>
+        <button class="main-tab" data-tab="practice" onclick="switchMainTab(this)">Practice Sheet</button>
+        <button class="main-tab" data-tab="plan" onclick="switchMainTab(this)">Study Plan</button>
+        <button class="main-tab" data-tab="contests" onclick="switchMainTab(this)">Weekly Contests</button>
+      </div>
+
+      <!-- Single Global Search Container -->
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" class="search-input" placeholder="Search topics, problems, or difficulty..." />
+      </div>
+      
+      <!-- Panel 1: Roadmap Theory -->
+      <div id="roadmap" class="tab-panel active">
+        <div id="roadmap-container">
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg);"></div>
+        </div>
+      </div>
+      
+      <!-- Panel 2: Practice Problems -->
+      <div id="practice" class="tab-panel">
+        <div id="practice-container">
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 100px; border-radius: var(--radius-lg);"></div>
+        </div>
+      </div>
+      
+      <!-- Panel 3: 30-Day Plan & Rituals -->
+      <div id="plan" class="tab-panel">
+        
+        <!-- 1-Month Study Plan & Contest Syllabus -->
+        <section style="margin-bottom: var(--space-3xl);">
+          <div class="section-eyebrow">Cadence & Assessment</div>
+          <h2 class="section-title">1-Month 2-Hour Daily Study Plan</h2>
+          <p class="section-desc">A structured weekly routine designed to fit exactly 2 hours a day. Study concepts from Monday to Thursday, and take a Friday Contest to verify your structural understanding.</p>
+          
+          <div class="plan-timeline">
+            <!-- Week 1 -->
+            <div class="plan-phase" style="border-left-color: var(--accent-gold); margin-bottom: var(--space-xl);">
+              <div class="plan-phase-days" style="background: rgba(201, 168, 76, 0.1); color: var(--accent-gold);">Week 1</div>
+              <h3 class="plan-phase-title">Sorting & Arrays Easy</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: var(--space-md);">Syllabus: Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, Quick Sort, STL std::sort, and basic Array manipulations.</p>
+              
+              <h4 style="font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); margin-bottom: var(--space-xs);">Daily study Schedule (2 Hours Daily)</h4>
+              <ul class="plan-phase-items" style="margin-bottom: var(--space-md); list-style: none; padding-left: 0;">
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-gold); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Monday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Bubble, Selection, & Insertion Sort (Theory, implementation, & stable/unstable behaviors)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-gold); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Tuesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Merge Sort & Quick Sort (Divide & Conquer, recursion stack depth, & pivot selections)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-gold); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Wednesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Arrays Easy basics (Largest/Second largest element, check if sorted, remove duplicates, shift places)</span></li>
+                <li style="padding: 6px 0; display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-gold); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Thursday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Advanced Easy Arrays (Union, intersection, move zeroes, search insert position, two sum hashing)</span></li>
+              </ul>
+              
+              <div style="background: rgba(139, 92, 246, 0.05); border: 1px dashed rgba(139, 92, 246, 0.3); border-radius: var(--radius-md); padding: var(--space-md); margin-top: var(--space-md);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-violet);">Friday Assessment Syllabus</span>
+                  <span style="background: var(--accent-violet); color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: var(--radius-full); font-family: var(--font-display);">2-Hour Limit</span>
+                </div>
+                <h5 style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; margin-bottom: 5px; color: var(--text-primary);">Contest 1: Sorting & Arrays Easy</h5>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;">
+                  <strong>Quiz Round:</strong> 20 Multiple Choice Questions testing stable sort mechanisms, recurrence relations, std::sort inner structures, vectors memory reserve overhead, and rotational modulus index arithmetic.<br>
+                  <strong>Coding Round (10 Problems):</strong> 5 Easy, 3 Medium, 2 Hard coding problems directly synced from LeetCode.
+                </p>
+              </div>
+            </div>
+            
+            <!-- Week 2 -->
+            <div class="plan-phase" style="border-left-color: var(--accent-violet); margin-bottom: var(--space-xl);">
+              <div class="plan-phase-days" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-violet);">Week 2</div>
+              <h3 class="plan-phase-title">Arrays Medium & Hard</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: var(--space-md);">Syllabus: Two-pointer/sliding window patterns, Kadane's algorithm, stock buy & sell, next permutations, matrix traversals, and Pascal's Triangle.</p>
+              
+              <h4 style="font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); margin-bottom: var(--space-xs);">Daily study Schedule (2 Hours Daily)</h4>
+              <ul class="plan-phase-items" style="margin-bottom: var(--space-md); list-style: none; padding-left: 0;">
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-violet); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Monday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Two Pointer array traversals (Contains Duplicate, 2 Sum hash map, and Move Zeroes)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-violet); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Tuesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Kadane's Algorithm & Stock Buy/Sell (Maximum subarray sums, state transitions, & peak buy indices)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-violet); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Wednesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Permutations & Matrices (Next permutation suffix index finding, Boyer-Moore Voting, Set Matrix Zeroes, Spiral Matrix, Rotate Image)</span></li>
+                <li style="padding: 6px 0; display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-violet); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Thursday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Advanced Array Combinatorics (Pascal's Triangle elements binomial calculations, 3Sum, 4Sum, Merge overlapping intervals)</span></li>
+              </ul>
+              
+              <div style="background: rgba(201, 168, 76, 0.05); border: 1px dashed rgba(201, 168, 76, 0.3); border-radius: var(--radius-md); padding: var(--space-md); margin-top: var(--space-md);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-gold);">Friday Assessment Syllabus</span>
+                  <span style="background: var(--accent-gold); color: #000; font-size: 0.65rem; padding: 2px 8px; border-radius: var(--radius-full); font-family: var(--font-display); font-weight: 600;">2-Hour Limit</span>
+                </div>
+                <h5 style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; margin-bottom: 5px; color: var(--text-primary);">Contest 2: Arrays Medium & Hard</h5>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;">
+                  <strong>Quiz Round:</strong> 20 Multiple Choice Questions testing Boyer-Moore majority voting variables, Kadane sum reset triggers, Dutch National Flag three-pointer conditions, and matrix transpose-rotation mathematics.<br>
+                  <strong>Coding Round (10 Problems):</strong> 5 Easy, 3 Medium, 2 Hard coding problems directly synced from LeetCode.
+                </p>
+              </div>
+            </div>
+            
+            <!-- Week 3 -->
+            <div class="plan-phase" style="border-left-color: var(--accent-green); margin-bottom: var(--space-xl);">
+              <div class="plan-phase-days" style="background: rgba(52, 211, 153, 0.1); color: var(--accent-green);">Week 3</div>
+              <h3 class="plan-phase-title">Binary Search & Strings</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: var(--space-md);">Syllabus: Search space reduction mechanisms, bounds, searching in rotated arrays, peak elements, Binary Search on Answers, anagram hashes, and string pattern searching.</p>
+              
+              <h4 style="font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-primary); margin-bottom: var(--space-xs);">Daily study Schedule (2 Hours Daily)</h4>
+              <ul class="plan-phase-items" style="margin-bottom: var(--space-md); list-style: none; padding-left: 0;">
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-green); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Monday</span><span style="font-size: 0.88rem; color: var(--text-primary);">BS on 1D Arrays (Standard binary search implementation, lower & upper bounds, search insert position, rotated search)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-green); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Tuesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">BS on Answer (Minimizing max cost, Koko eating bananas, capacity to ship packages, split array largest sum)</span></li>
+                <li style="padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-green); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Wednesday</span><span style="font-size: 0.88rem; color: var(--text-primary);">BS on 2D Arrays & Basic Strings (Matrix search, peak element in 2D, valid anagrams, valid palindromes, longest common prefix)</span></li>
+                <li style="padding: 6px 0; display: flex; flex-direction: column; gap: 2px;"><span style="color: var(--accent-green); font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;">Thursday</span><span style="font-size: 0.88rem; color: var(--text-primary);">Advanced String & Window Patterns (Longest substring without repeating characters, minimum window substring, pattern matching algorithms)</span></li>
+              </ul>
+              
+              <div style="background: rgba(52, 211, 153, 0.05); border: 1px dashed rgba(52, 211, 153, 0.3); border-radius: var(--radius-md); padding: var(--space-md); margin-top: var(--space-md);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                  <span style="font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-green);">Friday Assessment Syllabus</span>
+                  <span style="background: var(--accent-green); color: #000; font-size: 0.65rem; padding: 2px 8px; border-radius: var(--radius-full); font-family: var(--font-display); font-weight: 600;">2-Hour Limit</span>
+                </div>
+                <h5 style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; margin-bottom: 5px; color: var(--text-primary);">Contest 3: Binary Search & Strings</h5>
+                <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6;">
+                  <strong>Quiz Round:</strong> 20 Multiple Choice Questions testing lower/upper bounds definitions, peak element conditions, binary search answers search ranges, and sliding window substring character counts.<br>
+                  <strong>Coding Round (10 Problems):</strong> 5 Easy, 3 Medium, 2 Hard coding problems directly synced from LeetCode.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Daily Routine -->
+        <section style="margin-bottom: var(--space-3xl);">
+          <div class="section-eyebrow">Daily Routine</div>
+          <h2 class="section-title">The Study Ritual</h2>
+          <p class="section-desc">Establishing a daily routine is key to deep focus and rewiring your logical intuition. Follow this structure every day.</p>
+          
+          <div class="routine-cards">
+            <div class="routine-card">
+              <h3 class="routine-card-title">Morning Focus</h3>
+              <ul>
+                <li><span>Review previous day's mistakes</span> <span>15 mins</span></li>
+                <li><span>Watch theory video & take brief notes</span> <span>45 mins</span></li>
+                <li><span>Dry run the algorithm on paper</span> <span>30 mins</span></li>
+              </ul>
+            </div>
+            <div class="routine-card">
+              <h3 class="routine-card-title">Evening Coding</h3>
+              <ul>
+                <li><span>Solve easy/medium problems on LeetCode</span> <span>90 mins</span></li>
+                <li><span>Analyze optimal time/space complexity</span> <span>20 mins</span></li>
+                <li><span>Document mistakes in self-made log</span> <span>15 mins</span></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Must-Do Problems Section -->
+        <section class="must-do-section" style="margin-bottom: var(--space-3xl);">
+          <div class="must-do-title">Must-Do Problems First</div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: var(--space-lg); line-height: 1.6;">
+            If you have limited time or are doing a last-minute revision before interviews, focus on these <strong>critical problems</strong>. They cover the most common patterns asked in top product companies.
+          </p>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg);">
+            <div>
+              <h4 style="font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: var(--space-sm);">Arrays</h4>
+              <ul class="subtopic-list" style="font-size: 0.85rem; color: var(--text-secondary);">
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener">1. Two Sum</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener">2. Move Zeroes</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/" target="_blank" rel="noopener">3. Best Time Buy/Sell Stock</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/maximum-subarray/" target="_blank" rel="noopener">4. Maximum Subarray</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank" rel="noopener">5. Product of Array Except Self</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank" rel="noopener">6. Subarray Sum Equals K</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank" rel="noopener">7. Longest Consecutive Sequence</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/find-the-duplicate-number/" target="_blank" rel="noopener">8. Find Duplicate Number</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/set-matrix-zeroes/" target="_blank" rel="noopener">9. Set Matrix Zeroes</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/rotate-image/" target="_blank" rel="noopener">10. Rotate Image</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 style="font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: var(--space-sm);">Binary Search</h4>
+              <ul class="subtopic-list" style="font-size: 0.85rem; color: var(--text-secondary);">
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener">1. Binary Search</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/search-insert-position/" target="_blank" rel="noopener">2. Search Insert Position</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/" target="_blank" rel="noopener">3. First & Last Position</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener">4. Search in Rotated Array</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank" rel="noopener">5. Min in Rotated Array</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/find-peak-element/" target="_blank" rel="noopener">6. Find Peak Element</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank" rel="noopener">7. Koko Eating Bananas</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/" target="_blank" rel="noopener">8. Capacity to Ship Packages</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/" target="_blank" rel="noopener">9. Median of Two Sorted Arrays</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/split-array-largest-sum/" target="_blank" rel="noopener">10. Split Array Largest Sum</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 style="font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: var(--space-sm);">Strings</h4>
+              <ul class="subtopic-list" style="font-size: 0.85rem; color: var(--text-secondary);">
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/valid-palindrome/" target="_blank" rel="noopener">1. Valid Palindrome</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/valid-anagram/" target="_blank" rel="noopener">2. Valid Anagram</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/longest-common-prefix/" target="_blank" rel="noopener">3. Longest Common Prefix</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener">4. Longest Substring No Repeat</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/group-anagrams/" target="_blank" rel="noopener">5. Group Anagrams</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/longest-palindromic-substring/" target="_blank" rel="noopener">6. Longest Palindromic Substring</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/decode-string/" target="_blank" rel="noopener">7. Decode String</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/minimum-window-substring/" target="_blank" rel="noopener">8. Minimum Window Substring</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 style="font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: var(--space-sm);">Linked List</h4>
+              <ul class="subtopic-list" style="font-size: 0.85rem; color: var(--text-secondary);">
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/reverse-linked-list/" target="_blank" rel="noopener">1. Reverse Linked List</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/merge-two-sorted-lists/" target="_blank" rel="noopener">2. Merge Two Sorted Lists</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank" rel="noopener">3. Linked List Cycle</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/middle-of-the-linked-list/" target="_blank" rel="noopener">4. Middle of Linked List</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/remove-nth-node-from-end-of-list/" target="_blank" rel="noopener">5. Remove Nth Node From End</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/add-two-numbers/" target="_blank" rel="noopener">6. Add Two Numbers</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/reorder-list/" target="_blank" rel="noopener">7. Reorder List</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/sort-list/" target="_blank" rel="noopener">8. Sort List</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/reverse-nodes-in-k-group/" target="_blank" rel="noopener">9. Reverse Nodes in k-Group</a></li>
+                <li style="padding: 4px 0;"><a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">10. LRU Cache</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Final Advice -->
+        <section class="callout">
+          <div class="callout-title">Final Advice</div>
+          <p style="margin-bottom: var(--space-md);">
+            Don’t try to complete all questions fast. Focus on quality rather than quantity.
+          </p>
+          <p style="margin-bottom: var(--space-md);">
+            Your target should be:
+          </p>
+          <ul class="plan-phase-items" style="margin-bottom: var(--space-md); list-style: none;">
+            <li style="margin-bottom: var(--space-xs);"><strong>Easy:</strong> Solve within 15-20 mins without looking at hints.</li>
+            <li style="margin-bottom: var(--space-xs);"><strong>Medium:</strong> Dry run properly on paper before coding. Focus on the core pattern.</li>
+            <li style="margin-bottom: var(--space-xs);"><strong>Hard:</strong> Understand the underlying pattern first, build a sub-optimal solution, then study the optimal one. Retry solving it 3 days later.</li>
+          </ul>
+          <p style="margin-bottom: var(--space-lg);">
+            For each incorrect submission or problem you struggled with, document: <strong>Mistake</strong>, <strong>Pattern</strong>, <strong>Correct Logic</strong>, and set a <strong>Revision Date</strong> in your personal diary. Spaced repetition is the secret to mastery.
+          </p>
+          
+          <div style="text-align: center;">
+            <button class="reset-btn" onclick="resetAllProgress()">Reset All Progress</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- Panel 4: Weekly Contests -->
+      <div id="contests" class="tab-panel">
+        <div id="contests-container">
+          <div class="loading-shimmer" style="height: 150px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 150px; border-radius: var(--radius-lg); margin-bottom: var(--space-lg);"></div>
+          <div class="loading-shimmer" style="height: 150px; border-radius: var(--radius-lg);"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-logo">Co-Star DSA</div>
+      <p class="footer-text">Built in alignment with Striver's A2Z DSA course.</p>
+      <div class="footer-links">
+        <a href="https://takeuforward.org/dsa/strivers-a2z-sheet-learn-dsa-a-to-z" target="_blank" rel="noopener">A2Z Sheet</a>
+        <a href="https://www.youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz" target="_blank" rel="noopener">YouTube Playlist</a>
+        <a href="https://takeuforward.org/home" target="_blank" rel="noopener">TakeUForward</a>
+      </div>
+    </footer>
+
+    <!-- Contest Arena Overlay -->
+    <div id="arena-overlay" class="arena-overlay">
+      <div class="arena-container">
+        <!-- Fullscreen Warning Banner -->
+        <div id="fullscreen-warning-banner" class="fullscreen-warning-banner">
+          <span>⚠️ <strong>Rule Violation Warning:</strong> You have exited fullscreen mode. Please return to fullscreen mode to continue the contest and avoid disqualification.</span>
+          <button class="start-contest-btn" style="margin-left: auto; font-size: 0.75rem; padding: 4px 12px; border-color: var(--accent-red); color: var(--accent-red);" onclick="requestFullscreenMode()">Go Fullscreen</button>
+        </div>
+        <div class="arena-header">
+          <div class="arena-title-group">
+            <span class="arena-eyebrow">Friday Contest Arena</span>
+            <h2 id="arena-overlay-title" class="arena-title">Contest 1: Sorting & Arrays Easy</h2>
+          </div>
+          <div id="arena-timer-display" class="arena-timer">02:00:00</div>
+        </div>
+        <div id="arena-step-content">
+          <!-- Renders quiz steps or coding round here dynamically -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Application -->
+  <script src="app.js" defer></script>
+  
+  <!-- Extra Tab Switch & Search Clear UX Script -->
+  <script>
+    // Automatically switch tabs and clear search input when hash changes
+    function handleTabSwitchOnHash() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      
+      let tabToSwitch = null;
+      if (hash.startsWith('#roadmap-')) {
+        tabToSwitch = 'roadmap';
+      } else if (hash.startsWith('#practice-card-')) {
+        tabToSwitch = 'practice';
+      } else if (hash.startsWith('#contest-card-')) {
+        tabToSwitch = 'contests';
+      }
+      
+      if (tabToSwitch) {
+        const tabBtn = document.querySelector(`.main-tab[data-tab="${tabToSwitch}"]`);
+        if (tabBtn && !tabBtn.classList.contains('active')) {
+          switchMainTab(tabBtn);
+        }
+        
+        // Wait a small bit for tab visibility, then scroll to element
+        setTimeout(() => {
+          const el = document.querySelector(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // If it's a topic card, open it
+            if (el.classList.contains('topic-card') && !el.classList.contains('open')) {
+              el.classList.add('open');
+            }
+          }
+        }, 100);
+      }
+    }
+
+    window.addEventListener('hashchange', handleTabSwitchOnHash);
+    window.addEventListener('DOMContentLoaded', () => {
+      // Small timeout to allow app.js rendering first
+      setTimeout(handleTabSwitchOnHash, 200);
+
+      // Clear search when switching tabs
+      document.querySelectorAll('.main-tab').forEach(tabBtn => {
+        tabBtn.addEventListener('click', () => {
+          const searchInput = document.getElementById('search-input');
+          if (searchInput) {
+            searchInput.value = '';
+            // trigger input event to reset filter
+            searchInput.dispatchEvent(new Event('input'));
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
